@@ -31,7 +31,7 @@
 
     <!-- Review Form -->
     <div class="bg-white dark:bg-[#161615] rounded-lg shadow-lg p-6">
-        <form method="POST" action="{{ route('reviews.store') }}">
+        <form method="POST" action="{{ route('reviews.store') }}" enctype="multipart/form-data">
             @csrf
 
             <input type="hidden" name="movie_id" value="{{ $movieId }}">
@@ -78,6 +78,29 @@
                 @enderror
             </div>
 
+            <div class="mb-6">
+                <label for="image" class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
+                    Attach Image <span class="text-[#706f6c] dark:text-[#A1A09A]">(Optional)</span>
+                </label>
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                    class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-lg bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-[#1b1b18] dark:focus:ring-[#EDEDEC]">
+                <p class="mt-1 text-xs text-[#706f6c] dark:text-[#A1A09A]">
+                    Accepted formats: JPEG, PNG, GIF, WebP (Max 5MB)
+                </p>
+                @error('image')
+                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                @enderror
+
+                <!-- Image preview -->
+                <div id="image-preview" class="mt-4 hidden">
+                    <img id="preview-img" src="" alt="Preview" class="max-w-xs rounded-lg border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                </div>
+            </div>
+
             <div class="flex gap-4">
                 <button
                     type="submit"
@@ -105,6 +128,25 @@
 
     // Initialize count
     charCount.textContent = textarea.value.length;
+
+    // Image preview
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.classList.add('hidden');
+        }
+    });
 </script>
 @endpush
 @endsection

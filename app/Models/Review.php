@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Review extends Model
 {
@@ -21,6 +22,7 @@ class Review extends Model
         'movie_title',
         'review_text',
         'rating',
+        'image_path',
     ];
 
     /**
@@ -53,5 +55,15 @@ class Review extends Model
             'id' => $this->movie_id,
             'title' => $this->movie_title,
         ];
+    }
+
+    /**
+     * Get the image URL attribute.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image_path
+            ? Storage::url($this->image_path)
+            : null;
     }
 }

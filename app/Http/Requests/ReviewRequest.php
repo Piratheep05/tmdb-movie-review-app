@@ -21,12 +21,19 @@ class ReviewRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'movie_id' => ['required', 'integer'],
-            'movie_title' => ['required', 'string', 'max:255'],
+        $rules = [
             'review_text' => ['required', 'string', 'min:10', 'max:5000'],
-            'rating' => ['nullable', 'integer', 'min:1', 'max:10'],
+            'rating' => ['nullable', 'sometimes', 'integer', 'min:1', 'max:10'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,gif,webp', 'max:5120'],
         ];
+
+        // Only require movie_id and movie_title for create (not update)
+        if ($this->isMethod('POST')) {
+            $rules['movie_id'] = ['required', 'integer'];
+            $rules['movie_title'] = ['required', 'string', 'max:255'];
+        }
+
+        return $rules;
     }
 
     /**
@@ -44,6 +51,9 @@ class ReviewRequest extends FormRequest
             'review_text.max' => 'Review cannot exceed 5000 characters.',
             'rating.min' => 'Rating must be between 1 and 10.',
             'rating.max' => 'Rating must be between 1 and 10.',
+            'image.image' => 'The file must be an image.',
+            'image.mimes' => 'The image must be a file of type: jpeg, jpg, png, gif, webp.',
+            'image.max' => 'The image may not be greater than 5MB.',
         ];
     }
 }

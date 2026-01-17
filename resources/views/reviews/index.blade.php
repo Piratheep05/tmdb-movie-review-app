@@ -100,9 +100,17 @@
                 </div>
                 @endif
             </div>
-            <p class="text-[#706f6c] dark:text-[#A1A09A] leading-relaxed whitespace-pre-wrap">
+            <p class="text-[#706f6c] dark:text-[#A1A09A] leading-relaxed whitespace-pre-wrap mb-4">
                 {{ $review->review_text }}
             </p>
+            @if($review->image_path)
+            <div class="mt-4">
+                <img
+                    src="{{ Storage::url($review->image_path) }}"
+                    alt="Review image"
+                    class="max-w-md rounded-lg border border-[#e3e3e0] dark:border-[#3E3E3A]">
+            </div>
+            @endif
         </div>
         @endforeach
     </div>

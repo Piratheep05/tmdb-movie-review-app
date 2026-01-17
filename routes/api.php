@@ -24,8 +24,14 @@ Route::prefix('v1')->group(function () {
 
 // Protected API routes (require authentication)
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
-    // Review API endpoints
-    Route::apiResource('reviews', ReviewApiController::class);
+    // Review API endpoints (with 'api.' prefix to avoid name conflicts)
+    Route::apiResource('reviews', ReviewApiController::class)->names([
+        'index' => 'api.reviews.index',
+        'store' => 'api.reviews.store',
+        'show' => 'api.reviews.show',
+        'update' => 'api.reviews.update',
+        'destroy' => 'api.reviews.destroy',
+    ]);
 
     // Movie API with reviews
     Route::get('/movies/{movieId}/reviews', [MovieApiController::class, 'reviews'])->name('api.movies.reviews');

@@ -7,6 +7,7 @@ use App\Models\Review;
 use App\Services\TmdbService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ReviewController extends Controller
@@ -72,13 +73,22 @@ class ReviewController extends Controller
      */
     public function store(ReviewRequest $request): RedirectResponse
     {
-        $review = Review::create([
+        $data = [
             'user_id' => auth()->id(),
             'movie_id' => $request->movie_id,
             'movie_title' => $request->movie_title,
             'review_text' => $request->review_text,
             'rating' => $request->rating,
-        ]);
+        ];
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('reviews', 'public');
+            $data['image_path'] = $imagePath;
+        }
+
+        Review::create($data);
 
         return redirect()
             ->route('movies.show', $request->movie_id)
@@ -117,10 +127,34 @@ class ReviewController extends Controller
             abort(403, 'You can only update your own reviews.');
         }
 
-        $review->update([
+        // Prepare update data
+        $updateData = [
             'review_text' => $request->review_text,
-            'rating' => $request->rating,
-        ]);
+        ];
+
+        // Handle rating - convert empty string to null
+        $rating = $request->input('rating');
+        if ($rating !== null && $rating !== '') {
+            $updateData['rating'] = (int) $rating;
+        } else {
+            $updateData['rating'] = null;
+        }
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($review->image_path) {
+                Storage::disk('public')->delete($review->image_path);
+            }
+
+            $image = $request->file('image');
+            $imagePath = $image->store('reviews', 'public');
+            $updateData['image_path'] = $imagePath;
+        }
+
+        // Update the review
+        $review->fill($updateData);
+        $review->save();
 
         return redirect()
             ->route('movies.show', $review->movie_id)
@@ -137,6 +171,11 @@ class ReviewController extends Controller
         // Check authorization
         if ($review->user_id !== auth()->id()) {
             abort(403, 'You can only delete your own reviews.');
+        }
+
+        // Delete associated image
+        if ($review->image_path) {
+            Storage::disk('public')->delete($review->image_path);
         }
 
         $movieId = $review->movie_id;

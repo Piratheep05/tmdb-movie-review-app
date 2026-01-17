@@ -31,7 +31,23 @@
 
     <!-- Review Form -->
     <div class="bg-white dark:bg-[#161615] rounded-lg shadow-lg p-6">
-        <form method="POST" action="{{ route('reviews.update', $review->id) }}">
+        @if ($errors->any())
+        <div class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg mb-6">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        @if (session('success'))
+        <div class="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-200 px-4 py-3 rounded-lg mb-6">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        <form method="POST" action="{{ route('reviews.update', $review->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -79,6 +95,41 @@
                 @enderror
             </div>
 
+            <div class="mb-6">
+                <label for="image" class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
+                    Attach Image <span class="text-[#706f6c] dark:text-[#A1A09A]">(Optional)</span>
+                </label>
+
+                @if($review->image_path)
+                <div class="mb-3">
+                    <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-2">Current image:</p>
+                    <img
+                        src="{{ Storage::url($review->image_path) }}"
+                        alt="Current review image"
+                        class="max-w-xs rounded-lg border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                </div>
+                @endif
+
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                    class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-lg bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-[#1b1b18] dark:focus:ring-[#EDEDEC]">
+                <p class="mt-1 text-xs text-[#706f6c] dark:text-[#A1A09A]">
+                    Accepted formats: JPEG, PNG, GIF, WebP (Max 5MB)
+                </p>
+                @error('image')
+                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                @enderror
+
+                <!-- Image preview -->
+                <div id="image-preview" class="mt-4 hidden">
+                    <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-2">New image preview:</p>
+                    <img id="preview-img" src="" alt="Preview" class="max-w-xs rounded-lg border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                </div>
+            </div>
+
             <div class="flex gap-4">
                 <button
                     type="submit"
@@ -102,6 +153,25 @@
 
     textarea.addEventListener('input', function() {
         charCount.textContent = this.value.length;
+    });
+
+    // Image preview
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.classList.add('hidden');
+        }
     });
 </script>
 @endpush
