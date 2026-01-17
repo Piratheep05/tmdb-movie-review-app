@@ -42,4 +42,16 @@ class Review extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get movie relationship (virtual - movie data comes from TMDB).
+     * This is a helper method for consistency.
+     */
+    public function getMovieAttribute(): array
+    {
+        return [
+            'id' => $this->movie_id,
+            'title' => $this->movie_title,
+        ];
+    }
 }

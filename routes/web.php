@@ -3,6 +3,9 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MovieController;
+use App\Http\Controllers\MovieDetailsController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -25,4 +28,12 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Movie routes
+    Route::get('/movies/search', [MovieController::class, 'search'])->name('movies.search');
+    Route::get('/movies/{movieId}', [MovieDetailsController::class, 'show'])->name('movies.show');
+
+    // Review routes (custom create route must come before resource)
+    Route::get('/reviews/create/{movieId}', [ReviewController::class, 'create'])->name('reviews.create');
+    Route::resource('reviews', ReviewController::class)->except(['show', 'create']);
 });

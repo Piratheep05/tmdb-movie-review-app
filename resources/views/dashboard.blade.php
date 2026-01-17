@@ -21,11 +21,11 @@
             <div class="bg-white dark:bg-[#161615] rounded-lg shadow-lg p-6">
                 <h2 class="text-xl font-semibold text-[#1b1b18] dark:text-[#EDEDEC] mb-2">Search Movies</h2>
                 <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">Find and review your favorite movies</p>
-                <span class="inline-block px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg cursor-not-allowed">
-                    Coming Soon
-                </span>
+                <a href="{{ route('movies.search') }}" class="inline-block px-4 py-2 bg-[#1b1b18] dark:bg-[#EDEDEC] text-white dark:text-[#1b1b18] rounded-lg hover:opacity-90 transition">
+                    Search Movies
+                </a>
             </div>
-            
+
             <div class="bg-white dark:bg-[#161615] rounded-lg shadow-lg p-6">
                 <h2 class="text-xl font-semibold text-[#1b1b18] dark:text-[#EDEDEC] mb-2">My Reviews</h2>
                 <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">View and manage your reviews</p>
@@ -56,10 +56,12 @@
             </div>
         </div>
         @else
-            <div class="bg-white dark:bg-[#161615] rounded-lg shadow-lg p-8 text-center">
-                <p class="text-[#706f6c] dark:text-[#A1A09A] mb-4">You haven't written any reviews yet.</p>
-                <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Movie search feature coming soon!</p>
-            </div>
+        <div class="bg-white dark:bg-[#161615] rounded-lg shadow-lg p-8 text-center">
+            <p class="text-[#706f6c] dark:text-[#A1A09A] mb-4">You haven't written any reviews yet.</p>
+            <a href="{{ route('movies.search') }}" class="inline-block px-6 py-3 bg-[#1b1b18] dark:bg-[#EDEDEC] text-white dark:text-[#1b1b18] rounded-lg hover:opacity-90 transition">
+                Start Reviewing Movies
+            </a>
+        </div>
         @endif
     </div>
 </div>
