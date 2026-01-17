@@ -20,16 +20,16 @@ class ReviewController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Review::with(['user', 'movie'])
+        $query = Review::with('user')
             ->latest();
 
         // Filter by movie if provided
-        if ($request->has('movie_id')) {
+        if ($request->filled('movie_id')) {
             $query->where('movie_id', $request->movie_id);
         }
 
         // Filter by user if provided
-        if ($request->has('user_id')) {
+        if ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
         }
 
@@ -47,7 +47,7 @@ class ReviewController extends Controller
     {
         $movie = $this->tmdbService->getMovieDetails($movieId);
 
-        if (!$movie) {
+        if (! $movie) {
             abort(404, 'Movie not found');
         }
 

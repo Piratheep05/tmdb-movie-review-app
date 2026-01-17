@@ -18,10 +18,18 @@ class MovieDetailsController extends Controller
      */
     public function show(int $movieId, Request $request): View
     {
-        $movie = $this->tmdbService->getMovieDetails($movieId);
+        try {
+            $movie = $this->tmdbService->getMovieDetails($movieId);
 
-        if (!$movie) {
-            abort(404, 'Movie not found');
+            if (! $movie) {
+                abort(404, 'Movie not found');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Movie details error', [
+                'movie_id' => $movieId,
+                'error' => $e->getMessage(),
+            ]);
+            abort(500, 'Unable to load movie details. Please try again later.');
         }
 
         // Add image URLs

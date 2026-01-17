@@ -24,6 +24,12 @@
         </div>
     </form>
 
+    @if(isset($error))
+    <div class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg mb-6">
+        {{ $error }}
+    </div>
+    @endif
+
     @if($query)
     @if($totalResults > 0)
     <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">

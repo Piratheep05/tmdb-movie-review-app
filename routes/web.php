@@ -13,6 +13,7 @@ Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
     }
+
     return view('welcome');
 });
 
@@ -29,9 +30,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Movie routes
-    Route::get('/movies/search', [MovieController::class, 'search'])->name('movies.search');
-    Route::get('/movies/{movieId}', [MovieDetailsController::class, 'show'])->name('movies.show');
+    // Movie routes (with rate limiting)
+    Route::middleware('throttle:60,1')->group(function () {
+        Route::get('/movies/search', [MovieController::class, 'search'])->name('movies.search');
+        Route::get('/movies/{movieId}', [MovieDetailsController::class, 'show'])->name('movies.show');
+    });
 
     // Review routes (custom create route must come before resource)
     Route::get('/reviews/create/{movieId}', [ReviewController::class, 'create'])->name('reviews.create');

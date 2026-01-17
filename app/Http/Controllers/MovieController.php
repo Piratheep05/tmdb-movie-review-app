@@ -27,12 +27,19 @@ class MovieController extends Controller
             'total_pages' => 1,
         ];
 
-        if ($query) {
-            $results = $this->tmdbService->searchMovies($query, $page);
+        $error = null;
 
-            // Add poster URLs to results
-            foreach ($results['results'] as &$movie) {
-                $movie['poster_url'] = $this->tmdbService->getPosterUrl($movie['poster_path'] ?? null);
+        if ($query) {
+            try {
+                $results = $this->tmdbService->searchMovies($query, $page);
+
+                // Add poster URLs to results
+                foreach ($results['results'] as &$movie) {
+                    $movie['poster_url'] = $this->tmdbService->getPosterUrl($movie['poster_path'] ?? null);
+                }
+            } catch (\Exception $e) {
+                $error = 'Unable to search movies at this time. Please try again later.';
+                \Log::error('Movie search error', ['error' => $e->getMessage()]);
             }
         }
 
@@ -42,6 +49,7 @@ class MovieController extends Controller
             'currentPage' => $results['page'] ?? 1,
             'totalPages' => $results['total_pages'] ?? 1,
             'totalResults' => $results['total_results'] ?? 0,
+            'error' => $error,
         ]);
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 class TmdbService
 {
     private string $apiKey;
+
     private string $baseUrl;
 
     public function __construct()
@@ -21,8 +22,6 @@ class TmdbService
     /**
      * Search for movies by query.
      *
-     * @param string $query
-     * @param int $page
      * @return array<string, mixed>
      */
     public function searchMovies(string $query, int $page = 1): array
@@ -72,7 +71,6 @@ class TmdbService
     /**
      * Get movie details by ID.
      *
-     * @param int $movieId
      * @return array<string, mixed>|null
      */
     public function getMovieDetails(int $movieId): ?array
@@ -111,14 +109,10 @@ class TmdbService
 
     /**
      * Get movie poster image URL.
-     *
-     * @param string|null $posterPath
-     * @param string $size
-     * @return string|null
      */
     public function getPosterUrl(?string $posterPath, string $size = 'w500'): ?string
     {
-        if (!$posterPath) {
+        if (! $posterPath) {
             return null;
         }
 
@@ -127,14 +121,10 @@ class TmdbService
 
     /**
      * Get movie backdrop image URL.
-     *
-     * @param string|null $backdropPath
-     * @param string $size
-     * @return string|null
      */
     public function getBackdropUrl(?string $backdropPath, string $size = 'w1280'): ?string
     {
-        if (!$backdropPath) {
+        if (! $backdropPath) {
             return null;
         }
 
@@ -144,7 +134,6 @@ class TmdbService
     /**
      * Get popular movies.
      *
-     * @param int $page
      * @return array<string, mixed>
      */
     public function getPopularMovies(int $page = 1): array

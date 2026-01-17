@@ -29,9 +29,9 @@
             <div class="bg-white dark:bg-[#161615] rounded-lg shadow-lg p-6">
                 <h2 class="text-xl font-semibold text-[#1b1b18] dark:text-[#EDEDEC] mb-2">My Reviews</h2>
                 <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">View and manage your reviews</p>
-                <span class="inline-block px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg cursor-not-allowed">
-                    Coming Soon
-                </span>
+                <a href="{{ route('reviews.index', ['user_id' => auth()->id()]) }}" class="inline-block px-4 py-2 bg-[#1b1b18] dark:bg-[#EDEDEC] text-white dark:text-[#1b1b18] rounded-lg hover:opacity-90 transition">
+                    View All Reviews
+                </a>
             </div>
         </div>
 
